@@ -132,11 +132,38 @@
   }
   .item:hover{transform:translateY(-6px);box-shadow:0 14px 34px rgba(27,38,36,0.16);}
   .item .thumb{
+    position:relative;
     height:170px;display:flex;align-items:center;justify-content:center;
     background:linear-gradient(135deg, rgba(15,118,110,0.55), rgba(240,114,155,0.45));
     color:#fff;font-size:44px;overflow:hidden;
   }
   .item .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .zoom-btn{
+    position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;
+    background:rgba(27,38,36,0.55);backdrop-filter:blur(4px);
+    color:#fff;border:1.5px solid rgba(255,255,255,0.75);
+    display:flex;align-items:center;justify-content:center;font-size:16px;
+    cursor:pointer;transition:background .15s ease, transform .15s ease;
+    z-index:2;
+  }
+  .zoom-btn:hover{background:rgba(15,118,110,0.9);transform:scale(1.08);}
+
+  /* Lightbox de zoom */
+  .lightbox{
+    display:none;position:fixed;inset:0;z-index:200;
+    background:rgba(20,26,25,0.82);backdrop-filter:blur(6px);
+    align-items:center;justify-content:center;padding:30px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox-inner{max-width:min(90vw,900px);max-height:90vh;position:relative;text-align:center;}
+  .lightbox-inner img{max-width:100%;max-height:75vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.4);margin:0 auto;}
+  .lightbox-caption{color:#fff;margin-top:14px;font-weight:700;font-size:16px;}
+  .lightbox-close{
+    position:absolute;top:-18px;right:-18px;width:40px;height:40px;border-radius:50%;
+    background:var(--coral);color:#fff;border:none;font-size:20px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,0.3);
+  }
+  .lightbox-actions{margin-top:16px;}
   .item .info{padding:16px;display:flex;align-items:center;justify-content:space-between;}
   .item .info h4{margin:0;font-size:15px;}
   .item .tag{
@@ -251,10 +278,22 @@
     <button class="filter-chip" data-cat="vestidos">Vestidos</button>
     <button class="filter-chip" data-cat="pants">Pants</button>
     <button class="filter-chip" data-cat="chumpas">Chumpas</button>
+    <button class="filter-chip" data-cat="enterizos">Enterizos</button>
   </div>
   <div class="gallery" id="gallery"><!-- las tarjetas se generan con JS desde el arreglo PRODUCTOS --></div>
   <p class="gallery-note">Estas tarjetas son un marcador de posición. Reemplázalas por fotos reales editando el arreglo <code>PRODUCTOS</code> al final del archivo (busca el comentario "EDITA AQUÍ").</p>
 </section>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+    <div class="lightbox-actions">
+      <a href="#" id="lightboxWa" class="btn btn-accent" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+    </div>
+  </div>
+</div>
 
 <section id="contacto">
   <div class="contact glass wrap">
@@ -311,15 +350,37 @@
   // la propiedad "foto": "nombre-del-archivo.jpg" en el producto (ver guía COMO_SUBIR_FOTOS.md).
   const PRODUCTOS = [
     { nombre: "Camisa a cuadros", cat: "camisas", icon: "👔", foto: "Camisa1.png" },
-      { nombre: "Camisa polo", cat: "camisas", icon: "👕" },
+    { nombre: "Camisa polo", cat: "camisas", icon: "👕" },
+    { nombre: "Blusa de encaje", cat: "camisas", icon: "👚", foto: "Blusa1.png" },
     { nombre: "Vestido casual", cat: "vestidos", icon: "👗" },
-    { nombre: "Vestido de fiesta", cat: "vestidos", icon: "👗" },
+    { nombre: "Vestido de fiesta", cat: "vestidos", icon: "👗", foto: "Vestido 1.png" },
     { nombre: "Pants deportivo", cat: "pants", icon: "👖" },
     { nombre: "Jeans clásico", cat: "pants", icon: "👖" },
     { nombre: "Chumpa de mezclilla", cat: "chumpas", icon: "🧥" },
     { nombre: "Chumpa impermeable", cat: "chumpas", icon: "🧥" },
+    { nombre: "Enterizo short", cat: "enterizos", icon: "👖", foto: "Enterizo1.png" },
   ];
   // ------------------------------------------------------------------------------
+
+  // ---------- Lightbox de zoom ----------
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  const lightboxWa = document.getElementById('lightboxWa');
+
+  function openLightbox(p) {
+    lightboxImg.src = `fotos/${encodeURIComponent(p.foto)}`;
+    lightboxImg.alt = p.nombre;
+    lightboxCaption.textContent = `${p.nombre} — Q50`;
+    lightboxWa.href = waLink(`Hola! Me interesa esta prenda: ${p.nombre} (Q50). ¿Todavía está disponible?`);
+    lightbox.classList.add('open');
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+  }
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
   const gallery = document.getElementById('gallery');
   function render(cat) {
@@ -328,10 +389,11 @@
       const div = document.createElement('div');
       div.className = 'item glass';
       const thumbContent = p.foto
-        ? `<img src="fotos/${p.foto}" alt="${p.nombre}" loading="lazy">`
+        ? `<img src="fotos/${encodeURIComponent(p.foto)}" alt="${p.nombre}" loading="lazy">`
         : p.icon;
+      const zoomBtn = p.foto ? `<button class="zoom-btn" aria-label="Ver foto en grande">🔍</button>` : '';
       div.innerHTML = `
-        <div class="thumb">${thumbContent}</div>
+        <div class="thumb">${thumbContent}${zoomBtn}</div>
         <div class="info">
           <h4>${p.nombre}</h4>
           <span class="tag">Q50</span>
@@ -341,6 +403,12 @@
         const mensaje = `Hola! Me interesa esta prenda: ${p.nombre} (Q50). ¿Todavía está disponible?`;
         window.open(waLink(mensaje), '_blank', 'noopener');
       });
+      if (p.foto) {
+        div.querySelector('.zoom-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          openLightbox(p);
+        });
+      }
       gallery.appendChild(div);
     });
   }
