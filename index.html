@@ -286,11 +286,11 @@
   document.getElementById('year').textContent = new Date().getFullYear();
 
   // ---------- EDITA AQUÍ: tu número de WhatsApp (con código de país, sin + ni espacios) ----------
-  const WHATSAPP_NUMBER = "50235188457"; // ejemplo: Guatemala 502 + tu número de 8 dígitos
+  const WHATSAPP_NUMBER = "50235188457";
   // -----------------------------------------------------------------------------------------------
 
   function waLink(mensaje) {
-    return `https://wa.me/${50235188457}?text=${encodeURIComponent(mensaje)}`;
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
   }
 
   // Enlaces generales de WhatsApp (nav, hero, contacto)
