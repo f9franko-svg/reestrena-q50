@@ -117,7 +117,12 @@
   .price-section p{max-width:520px;margin:14px auto 0;color:#EAF6F4;}
 
   /* Catálogo */
-  .filters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;}
+  .filter-group{margin-bottom:20px;}
+  .filter-label{
+    display:block;text-align:center;font-size:12px;font-weight:800;letter-spacing:0.06em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+  }
+  .filters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px;}
   .filter-chip{
     border:1.5px solid var(--teal); background:var(--glass-bg-strong); color:var(--teal-dark);
     backdrop-filter:blur(10px);
@@ -272,13 +277,29 @@
     <h2>Catálogo</h2>
     <p>Publicamos prendas nuevas cada lunes y jueves. Toca una prenda para apartarla por WhatsApp:</p>
   </div>
-  <div class="filters" id="filters">
-    <button class="filter-chip active" data-cat="todo">Todo</button>
-    <button class="filter-chip" data-cat="camisas">Camisas</button>
-    <button class="filter-chip" data-cat="vestidos">Vestidos</button>
-    <button class="filter-chip" data-cat="pants">Pants</button>
-    <button class="filter-chip" data-cat="chumpas">Chumpas</button>
-    <button class="filter-chip" data-cat="enterizos">Enterizos</button>
+  <div class="filter-group">
+    <span class="filter-label">Categoría</span>
+    <div class="filters" id="filtersCat">
+      <button class="filter-chip active" data-cat="todo">Todo</button>
+      <button class="filter-chip" data-cat="camisas">Camisas</button>
+      <button class="filter-chip" data-cat="vestidos">Vestidos</button>
+      <button class="filter-chip" data-cat="pants">Pants</button>
+      <button class="filter-chip" data-cat="chumpas">Chumpas</button>
+      <button class="filter-chip" data-cat="enterizos">Enterizos</button>
+    </div>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Para</span>
+    <div class="filters" id="filtersGenero">
+      <button class="filter-chip active" data-genero="todos">Todos</button>
+      <button class="filter-chip" data-genero="dama">Dama</button>
+      <button class="filter-chip" data-genero="caballero">Caballero</button>
+      <button class="filter-chip" data-genero="ninos">Niños</button>
+    </div>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Marca</span>
+    <div class="filters" id="filtersMarca"><!-- se genera con JS a partir de PRODUCTOS --></div>
   </div>
   <div class="gallery" id="gallery"><!-- las tarjetas se generan con JS desde el arreglo PRODUCTOS --></div>
   <p class="gallery-note">Estas tarjetas son un marcador de posición. Reemplázalas por fotos reales editando el arreglo <code>PRODUCTOS</code> al final del archivo (busca el comentario "EDITA AQUÍ").</p>
@@ -348,17 +369,20 @@
   // "icon" es un emoji de marcador de posición: se usa SOLO si el producto no tiene "foto".
   // Para poner una foto real: sube la imagen a la carpeta /fotos del repositorio y agrega
   // la propiedad "foto": "nombre-del-archivo.jpg" en el producto (ver guía COMO_SUBIR_FOTOS.md).
+  // "genero" debe ser: "dama", "caballero" o "ninos".
+  // "marca" escribe el nombre de la marca tal como aparece en la etiqueta (ej. "Golden Tree").
+  //         Si lo dejas vacío (""), la prenda no aparecerá al filtrar por marca, pero sí en "Todas".
   const PRODUCTOS = [
-    { nombre: "Camisa a cuadros", cat: "camisas", icon: "👔", foto: "Camisa1.png" },
-    { nombre: "Camisa polo", cat: "camisas", icon: "👕" },
-    { nombre: "Blusa de encaje", cat: "camisas", icon: "👚", foto: "Blusa1.png" },
-    { nombre: "Vestido casual", cat: "vestidos", icon: "👗" },
-    { nombre: "Vestido de fiesta", cat: "vestidos", icon: "👗", foto: "Vestido 1.png" },
-    { nombre: "Pants deportivo", cat: "pants", icon: "👖" },
-    { nombre: "Jeans clásico", cat: "pants", icon: "👖" },
-    { nombre: "Chumpa de mezclilla", cat: "chumpas", icon: "🧥" },
-    { nombre: "Chumpa impermeable", cat: "chumpas", icon: "🧥" },
-    { nombre: "Enterizo short", cat: "enterizos", icon: "👖", foto: "Enterizo1.png" },
+    { nombre: "Camisa a cuadros", cat: "camisas", genero: "caballero", marca: "Golden Tree", icon: "👔", foto: "Camisa1.png" },
+    { nombre: "Camisa polo", cat: "camisas", genero: "caballero", marca: "", icon: "👕" },
+    { nombre: "Blusa de encaje", cat: "camisas", genero: "dama", marca: "", icon: "👚", foto: "Blusa1.png" },
+    { nombre: "Vestido casual", cat: "vestidos", genero: "dama", marca: "", icon: "👗" },
+    { nombre: "Vestido de fiesta", cat: "vestidos", genero: "dama", marca: "", icon: "👗", foto: "Vestido 1.png" },
+    { nombre: "Pants deportivo", cat: "pants", genero: "unisex", marca: "", icon: "👖" },
+    { nombre: "Jeans clásico", cat: "pants", genero: "unisex", marca: "", icon: "👖" },
+    { nombre: "Chumpa de mezclilla", cat: "chumpas", genero: "unisex", marca: "", icon: "🧥" },
+    { nombre: "Chumpa impermeable", cat: "chumpas", genero: "unisex", marca: "", icon: "🧥" },
+    { nombre: "Enterizo short", cat: "enterizos", genero: "dama", marca: "", icon: "👖", foto: "Enterizo1.png" },
   ];
   // ------------------------------------------------------------------------------
 
@@ -382,10 +406,32 @@
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
+  // ---------- Filtros combinados: categoría + género + marca ----------
+  const state = { cat: 'todo', genero: 'todos', marca: 'todas' };
+
+  // Genera los botones de marca dinámicamente a partir de las marcas que sí tengan valor
+  const marcasUnicas = [...new Set(PRODUCTOS.map(p => p.marca).filter(m => m && m.trim()))].sort();
+  const filtersMarca = document.getElementById('filtersMarca');
+  filtersMarca.innerHTML = '<button class="filter-chip active" data-marca="todas">Todas</button>' +
+    marcasUnicas.map(m => `<button class="filter-chip" data-marca="${m}">${m}</button>`).join('');
+
+  function matches(p) {
+    const okCat = state.cat === 'todo' || p.cat === state.cat;
+    const okGenero = state.genero === 'todos' || p.genero === state.genero ||
+      (p.genero === 'unisex' && state.genero !== 'ninos');
+    const okMarca = state.marca === 'todas' || p.marca === state.marca;
+    return okCat && okGenero && okMarca;
+  }
+
   const gallery = document.getElementById('gallery');
-  function render(cat) {
+  function render() {
     gallery.innerHTML = '';
-    PRODUCTOS.filter(p => cat === 'todo' || p.cat === cat).forEach(p => {
+    const visibles = PRODUCTOS.filter(matches);
+    if (visibles.length === 0) {
+      gallery.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);">No hay prendas con esa combinación de filtros todavía.</p>';
+      return;
+    }
+    visibles.forEach(p => {
       const div = document.createElement('div');
       div.className = 'item glass';
       const thumbContent = p.foto
@@ -412,15 +458,21 @@
       gallery.appendChild(div);
     });
   }
-  render('todo');
+  render();
 
-  document.querySelectorAll('.filter-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      render(chip.dataset.cat);
+  function wireFilterGroup(containerId, stateKey) {
+    document.getElementById(containerId).querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.getElementById(containerId).querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        state[stateKey] = chip.dataset[stateKey];
+        render();
+      });
     });
-  });
+  }
+  wireFilterGroup('filtersCat', 'cat');
+  wireFilterGroup('filtersGenero', 'genero');
+  wireFilterGroup('filtersMarca', 'marca');
 </script>
 
 </body>
