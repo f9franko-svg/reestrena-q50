@@ -134,8 +134,9 @@
   .item .thumb{
     height:170px;display:flex;align-items:center;justify-content:center;
     background:linear-gradient(135deg, rgba(15,118,110,0.55), rgba(240,114,155,0.45));
-    color:#fff;font-size:44px;
+    color:#fff;font-size:44px;overflow:hidden;
   }
+  .item .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
   .item .info{padding:16px;display:flex;align-items:center;justify-content:space-between;}
   .item .info h4{margin:0;font-size:15px;}
   .item .tag{
@@ -305,10 +306,11 @@
   links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
 
   // ---------- EDITA AQUÍ: reemplaza estos productos por tus prendas reales ----------
-  // "icon" es solo un emoji de marcador de posición. Cuando tengas fotos, cambia
-  // el bloque .thumb para usar <img src="fotos/tu-foto.jpg"> en lugar del emoji.
+  // "icon" es un emoji de marcador de posición: se usa SOLO si el producto no tiene "foto".
+  // Para poner una foto real: sube la imagen a la carpeta /fotos del repositorio y agrega
+  // la propiedad "foto": "nombre-del-archivo.jpg" en el producto (ver guía COMO_SUBIR_FOTOS.md).
   const PRODUCTOS = [
-    { nombre: "Camisa a cuadros", cat: "camisas", icon: "👔" },
+    { nombre: "Camisa a cuadros", cat: "camisas", icon: "👔" /*, foto: "camisa-cuadros.jpg" */ },
     { nombre: "Camisa polo", cat: "camisas", icon: "👕" },
     { nombre: "Vestido casual", cat: "vestidos", icon: "👗" },
     { nombre: "Vestido de fiesta", cat: "vestidos", icon: "👗" },
@@ -325,8 +327,11 @@
     PRODUCTOS.filter(p => cat === 'todo' || p.cat === cat).forEach(p => {
       const div = document.createElement('div');
       div.className = 'item glass';
+      const thumbContent = p.foto
+        ? `<img src="fotos/${p.foto}" alt="${p.nombre}" loading="lazy">`
+        : p.icon;
       div.innerHTML = `
-        <div class="thumb">${p.icon}</div>
+        <div class="thumb">${thumbContent}</div>
         <div class="info">
           <h4>${p.nombre}</h4>
           <span class="tag">Q50</span>
