@@ -116,20 +116,36 @@
   .price-section .big{font-size:68px;font-weight:900;color:var(--coral);line-height:1;text-shadow:0 4px 24px rgba(0,0,0,0.15);}
   .price-section p{max-width:520px;margin:14px auto 0;color:#EAF6F4;}
 
-  /* Catálogo */
-  .filter-group{margin-bottom:20px;}
-  .filter-label{
-    display:block;text-align:center;font-size:12px;font-weight:800;letter-spacing:0.06em;
-    text-transform:uppercase;color:var(--muted);margin-bottom:10px;
-  }
-  .filters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px;}
-  .filter-chip{
+  /* Catálogo — menús desplegables de filtro */
+  .dropdown-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:34px;}
+  .dropdown{position:relative;}
+  .dropdown-trigger{
     border:1.5px solid var(--teal); background:var(--glass-bg-strong); color:var(--teal-dark);
     backdrop-filter:blur(10px);
-    padding:9px 20px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;
-    transition:background .15s ease, color .15s ease;
+    padding:10px 20px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;
+    display:flex;align-items:center;gap:8px;transition:background .15s ease, color .15s ease;
   }
-  .filter-chip.active,.filter-chip:hover{background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;}
+  .dropdown-trigger:hover{background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;}
+  .dropdown-trigger .chev{font-size:11px;transition:transform .15s ease;}
+  .dropdown.open .dropdown-trigger{background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;}
+  .dropdown.open .chev{transform:rotate(180deg);}
+  .dropdown-panel{
+    display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);
+    min-width:190px;background:#fff;border:1px solid rgba(15,118,110,0.15);
+    border-radius:14px;box-shadow:0 14px 34px rgba(27,38,36,0.18);
+    padding:8px;z-index:20;
+  }
+  .dropdown.open .dropdown-panel{display:block;}
+  .dropdown-option{
+    display:block;width:100%;text-align:left;background:none;border:none;
+    padding:9px 14px;border-radius:8px;font-weight:600;font-size:14px;color:var(--ink);
+    cursor:pointer;white-space:nowrap;
+  }
+  .dropdown-option:hover{background:var(--cream);}
+  .dropdown-option.active{background:var(--teal);color:#fff;}
+  @media (max-width:800px){
+    .dropdown-panel{left:0;transform:none;min-width:160px;}
+  }
   .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:22px;}
   .item{
     overflow:hidden;cursor:pointer;
@@ -277,29 +293,31 @@
     <h2>Catálogo</h2>
     <p>Publicamos prendas nuevas cada lunes y jueves. Toca una prenda para apartarla por WhatsApp:</p>
   </div>
-  <div class="filter-group">
-    <span class="filter-label">Categoría</span>
-    <div class="filters" id="filtersCat">
-      <button class="filter-chip active" data-cat="todo">Todo</button>
-      <button class="filter-chip" data-cat="camisas">Camisas</button>
-      <button class="filter-chip" data-cat="vestidos">Vestidos</button>
-      <button class="filter-chip" data-cat="pants">Pants</button>
-      <button class="filter-chip" data-cat="chumpas">Chumpas</button>
-      <button class="filter-chip" data-cat="enterizos">Enterizos</button>
+  <div class="dropdown-row">
+    <div class="dropdown" id="ddCat">
+      <button class="dropdown-trigger" data-label="Categoría">Categoría <span class="chev">▾</span></button>
+      <div class="dropdown-panel">
+        <button class="dropdown-option active" data-cat="todo">Todo</button>
+        <button class="dropdown-option" data-cat="camisas">Camisas</button>
+        <button class="dropdown-option" data-cat="vestidos">Vestidos</button>
+        <button class="dropdown-option" data-cat="pants">Pants</button>
+        <button class="dropdown-option" data-cat="chumpas">Chumpas</button>
+        <button class="dropdown-option" data-cat="enterizos">Enterizos</button>
+      </div>
     </div>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">Para</span>
-    <div class="filters" id="filtersGenero">
-      <button class="filter-chip active" data-genero="todos">Todos</button>
-      <button class="filter-chip" data-genero="dama">Dama</button>
-      <button class="filter-chip" data-genero="caballero">Caballero</button>
-      <button class="filter-chip" data-genero="ninos">Niños</button>
+    <div class="dropdown" id="ddGenero">
+      <button class="dropdown-trigger" data-label="Para">Para <span class="chev">▾</span></button>
+      <div class="dropdown-panel">
+        <button class="dropdown-option active" data-genero="todos">Todos</button>
+        <button class="dropdown-option" data-genero="dama">Dama</button>
+        <button class="dropdown-option" data-genero="caballero">Caballero</button>
+        <button class="dropdown-option" data-genero="ninos">Niños</button>
+      </div>
     </div>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">Marca</span>
-    <div class="filters" id="filtersMarca"><!-- se genera con JS a partir de PRODUCTOS --></div>
+    <div class="dropdown" id="ddMarca">
+      <button class="dropdown-trigger" data-label="Marca">Marca <span class="chev">▾</span></button>
+      <div class="dropdown-panel" id="panelMarca"><!-- se genera con JS a partir de PRODUCTOS --></div>
+    </div>
   </div>
   <div class="gallery" id="gallery"><!-- las tarjetas se generan con JS desde el arreglo PRODUCTOS --></div>
   <p class="gallery-note">Estas tarjetas son un marcador de posición. Reemplázalas por fotos reales editando el arreglo <code>PRODUCTOS</code> al final del archivo (busca el comentario "EDITA AQUÍ").</p>
@@ -406,14 +424,14 @@
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
-  // ---------- Filtros combinados: categoría + género + marca ----------
+  // ---------- Filtros combinados: categoría + género + marca (menús desplegables) ----------
   const state = { cat: 'todo', genero: 'todos', marca: 'todas' };
 
-  // Genera los botones de marca dinámicamente a partir de las marcas que sí tengan valor
+  // Genera las opciones de marca dinámicamente a partir de las marcas que sí tengan valor
   const marcasUnicas = [...new Set(PRODUCTOS.map(p => p.marca).filter(m => m && m.trim()))].sort();
-  const filtersMarca = document.getElementById('filtersMarca');
-  filtersMarca.innerHTML = '<button class="filter-chip active" data-marca="todas">Todas</button>' +
-    marcasUnicas.map(m => `<button class="filter-chip" data-marca="${m}">${m}</button>`).join('');
+  const panelMarca = document.getElementById('panelMarca');
+  panelMarca.innerHTML = '<button class="dropdown-option active" data-marca="todas">Todas</button>' +
+    marcasUnicas.map(m => `<button class="dropdown-option" data-marca="${m}">${m}</button>`).join('');
 
   function matches(p) {
     const okCat = state.cat === 'todo' || p.cat === state.cat;
@@ -460,19 +478,44 @@
   }
   render();
 
-  function wireFilterGroup(containerId, stateKey) {
-    document.getElementById(containerId).querySelectorAll('.filter-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.getElementById(containerId).querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        state[stateKey] = chip.dataset[stateKey];
+  // ---------- Menús desplegables ----------
+  const dropdowns = document.querySelectorAll('.dropdown');
+
+  function closeAllDropdowns(except) {
+    dropdowns.forEach(dd => { if (dd !== except) dd.classList.remove('open'); });
+  }
+
+  dropdowns.forEach(dd => {
+    const trigger = dd.querySelector('.dropdown-trigger');
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = !dd.classList.contains('open');
+      closeAllDropdowns();
+      dd.classList.toggle('open', willOpen);
+    });
+  });
+  document.addEventListener('click', () => closeAllDropdowns());
+
+  function wireFilterGroup(dropdownId, stateKey) {
+    const dd = document.getElementById(dropdownId);
+    const trigger = dd.querySelector('.dropdown-trigger');
+    const baseLabel = trigger.dataset.label;
+    dd.querySelectorAll('.dropdown-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dd.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        state[stateKey] = opt.dataset[stateKey];
+        const isDefault = opt === dd.querySelector('.dropdown-option');
+        trigger.innerHTML = (isDefault ? baseLabel : `${baseLabel}: ${opt.textContent}`) + ' <span class="chev">▾</span>';
+        dd.classList.remove('open');
         render();
       });
     });
   }
-  wireFilterGroup('filtersCat', 'cat');
-  wireFilterGroup('filtersGenero', 'genero');
-  wireFilterGroup('filtersMarca', 'marca');
+  wireFilterGroup('ddCat', 'cat');
+  wireFilterGroup('ddGenero', 'genero');
+  wireFilterGroup('ddMarca', 'marca');
 </script>
 
 </body>
