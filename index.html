@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReEstrena Q50 — Ropa de segunda, todo a Q50</title>
+<meta name="description" content="ReEstrena Q50: ropa de segunda mano de buena calidad, todo a un precio único de Q50. Pide por WhatsApp.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+  :root{
+    --teal:#0F766E;
+    --teal-dark:#0B5A54;
+    --coral:#F4A340;
+    --coral-dark:#EE8B2E;
+    --cream:#FFF8EE;
+    --ink:#1F2A28;
+    --muted:#5B6664;
+    --card:#FFFFFF;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Arial, sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  a{color:inherit;}
+  img,svg{max-width:100%;display:block;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+
+  /* Header */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,248,238,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(15,118,110,0.12);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:1100px;margin:0 auto;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand img{width:40px;height:40px;}
+  .brand .q50{background:var(--coral);color:#fff;font-size:12px;padding:2px 8px;border-radius:10px;margin-left:4px;}
+  nav.links{display:flex;gap:24px;font-weight:600;font-size:15px;}
+  nav.links a{text-decoration:none;color:var(--ink);opacity:0.85;}
+  nav.links a:hover{opacity:1;color:var(--teal);}
+  .btn{
+    display:inline-block;padding:10px 20px;border-radius:999px;font-weight:700;
+    text-decoration:none;font-size:14px;transition:transform .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--teal);color:#fff;}
+  .btn-accent{background:var(--coral);color:#fff;}
+  .btn-ghost{border:2px solid var(--teal);color:var(--teal);}
+  .menu-toggle{display:none;background:none;border:none;font-size:26px;color:var(--teal);cursor:pointer;}
+
+  /* Hero */
+  .hero{padding:70px 0 60px;text-align:center;}
+  .hero h1{font-size:42px;margin:0 0 16px;color:var(--ink);}
+  .hero h1 span{color:var(--teal);}
+  .hero p{font-size:18px;color:var(--muted);max-width:560px;margin:0 auto 30px;}
+  .hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+  .price-badge{
+    display:inline-flex;align-items:center;gap:8px;background:var(--card);
+    border:2px dashed var(--coral);border-radius:999px;padding:8px 20px;
+    font-weight:800;color:var(--teal-dark);margin-bottom:24px;font-size:15px;
+  }
+
+  section{padding:60px 0;}
+  .section-title{text-align:center;margin-bottom:40px;}
+  .section-title h2{font-size:30px;margin:0 0 10px;}
+  .section-title p{color:var(--muted);margin:0;}
+
+  /* Cómo funciona */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .step{background:var(--card);border-radius:var(--radius);padding:28px;text-align:center;box-shadow:0 6px 18px rgba(15,118,110,0.08);}
+  .step .num{width:44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:18px;}
+  .step h3{margin:0 0 8px;font-size:18px;}
+  .step p{color:var(--muted);font-size:14px;margin:0;}
+
+  /* Precio único */
+  .price-section{background:var(--teal);color:#fff;border-radius:24px;margin:0 20px;padding:50px 30px;text-align:center;}
+  .price-section .big{font-size:64px;font-weight:900;color:var(--coral);line-height:1;}
+  .price-section p{max-width:520px;margin:14px auto 0;color:#EAF6F4;}
+
+  /* Catálogo */
+  .filters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;}
+  .filter-chip{
+    border:2px solid var(--teal); background:transparent; color:var(--teal);
+    padding:8px 18px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;
+  }
+  .filter-chip.active,.filter-chip:hover{background:var(--teal);color:#fff;}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
+  .item{
+    background:var(--card);border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 6px 18px rgba(15,118,110,0.08);
+  }
+  .item .thumb{
+    height:180px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);
+    color:#fff;font-size:44px;
+  }
+  .item .info{padding:16px;display:flex;align-items:center;justify-content:space-between;}
+  .item .info h4{margin:0;font-size:15px;}
+  .item .tag{background:var(--coral);color:#fff;font-weight:800;font-size:13px;padding:4px 10px;border-radius:8px;}
+  .gallery-note{text-align:center;color:var(--muted);font-size:14px;margin-top:24px;}
+
+  /* Contacto */
+  .contact{background:var(--card);border-radius:24px;margin:0 20px;padding:50px 30px;}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+  .contact h2{margin-top:0;}
+  .contact ul{list-style:none;padding:0;margin:0 0 24px;color:var(--muted);}
+  .contact li{margin-bottom:10px;padding-left:22px;position:relative;}
+  .contact li::before{content:"✓";color:var(--teal);position:absolute;left:0;font-weight:800;}
+  .contact-actions{display:flex;gap:14px;flex-wrap:wrap;}
+  .map-placeholder{
+    background:var(--cream);border:2px dashed var(--teal);border-radius:var(--radius);
+    height:220px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center;padding:20px;font-size:14px;
+  }
+
+  footer{text-align:center;padding:32px 20px;color:var(--muted);font-size:13px;}
+
+  @media (max-width:800px){
+    nav.links{position:fixed;top:64px;left:0;right:0;background:var(--cream);flex-direction:column;padding:20px;gap:18px;display:none;border-bottom:1px solid rgba(15,118,110,0.15);}
+    nav.links.open{display:flex;}
+    .menu-toggle{display:block;}
+    .hero h1{font-size:30px;}
+    .steps{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="#" class="brand"><img src="logo.svg" alt="ReEstrena Q50" style="width:150px;height:auto;"></a>
+    <nav class="links" id="navLinks">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#contacto">Contacto</a>
+      <a href="#contacto" class="btn btn-accent">Pedir por WhatsApp</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
+  </div>
+</header>
+
+<section class="hero wrap">
+  <div class="price-badge">💰 Precio único: Q50 por prenda</div>
+  <h1>Ropa de segunda <span>de buena calidad</span>.<br>Todo a Q50.</h1>
+  <p>Seleccionamos cada prenda a mano: sin manchas, sin huecos, buena tela. Sin regateos, sin sorpresas — el precio siempre es Q50.</p>
+  <div class="hero-actions">
+    <a href="#catalogo" class="btn btn-primary">Ver catálogo</a>
+    <a href="https://wa.me/50235188457" class="btn btn-accent" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+  </div>
+</section>
+
+<section id="como-funciona" class="wrap">
+  <div class="section-title">
+    <h2>¿Cómo funciona?</h2>
+    <p>Tres pasos, sin complicaciones.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <h3>Explora el catálogo</h3>
+      <p>Revisa las prendas disponibles aquí en la página o en nuestra página de Facebook.</p>
+    </div>
+    <div class="step">
+      <div class="num">2</div>
+      <h3>Aparta por WhatsApp</h3>
+      <p>Escríbenos el nombre de la prenda que te gustó para reservarla antes que se agote.</p>
+    </div>
+    <div class="step">
+      <div class="num">3</div>
+      <h3>Recibe tu prenda</h3>
+      <p>Coordinamos entrega en tu zona o recolecta directo. Pago contra entrega o transferencia.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="price-section wrap">
+    <div class="big">Q50</div>
+    <p>Sin importar la prenda —camisa, pantalón, vestido o chumpa— el precio siempre es el mismo. Calidad revisada, precio justo.</p>
+  </div>
+</section>
+
+<section id="catalogo" class="wrap">
+  <div class="section-title">
+    <h2>Catálogo</h2>
+    <p>Publicamos prendas nuevas cada lunes y jueves. Esto es lo que suele estar disponible:</p>
+  </div>
+  <div class="filters" id="filters">
+    <button class="filter-chip active" data-cat="todo">Todo</button>
+    <button class="filter-chip" data-cat="camisas">Camisas</button>
+    <button class="filter-chip" data-cat="vestidos">Vestidos</button>
+    <button class="filter-chip" data-cat="pants">Pants</button>
+    <button class="filter-chip" data-cat="chumpas">Chumpas</button>
+  </div>
+  <div class="gallery" id="gallery"><!-- las tarjetas se generan con JS desde el arreglo PRODUCTOS --></div>
+  <p class="gallery-note">Estas tarjetas son un marcador de posición. Reemplázalas por fotos reales editando el arreglo <code>PRODUCTOS</code> al final del archivo (busca el comentario "EDITA AQUÍ").</p>
+</section>
+
+<section id="contacto">
+  <div class="contact wrap">
+    <div class="contact-grid">
+      <div>
+        <h2>Contáctanos</h2>
+        <ul>
+          <li>Precio único de Q50 por prenda</li>
+          <li>Publicamos ropa nueva lunes y jueves, 6:00pm</li>
+          <li>Entregas en [tu zona] · envíos a todo el país</li>
+          <li>Pago contra entrega o por transferencia</li>
+        </ul>
+        <div class="contact-actions">
+          <a href="https://wa.me/50235188457" class="btn btn-accent" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://facebook.com/tu-pagina" class="btn btn-ghost" target="_blank" rel="noopener">Facebook</a>
+        </div>
+      </div>
+      <div class="map-placeholder">
+        Aquí puedes poner un mapa o la dirección del punto de entrega/recolecta.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © <span id="year"></span> ReEstrena Q50 — Ropa de segunda de buena calidad.
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Menú móvil
+  const toggle = document.getElementById('menuToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  // ---------- EDITA AQUÍ: reemplaza estos productos por tus prendas reales ----------
+  // "icon" es solo un emoji de marcador de posición. Cuando tengas fotos, cambia
+  // el bloque .thumb para usar <img src="fotos/tu-foto.jpg"> en lugar del emoji.
+  const PRODUCTOS = [
+    { nombre: "Camisa a cuadros", cat: "camisas", icon: "👔" },
+    { nombre: "Camisa polo", cat: "camisas", icon: "👕" },
+    { nombre: "Vestido casual", cat: "vestidos", icon: "👗" },
+    { nombre: "Vestido de fiesta", cat: "vestidos", icon: "👗" },
+    { nombre: "Pants deportivo", cat: "pants", icon: "👖" },
+    { nombre: "Jeans clásico", cat: "pants", icon: "👖" },
+    { nombre: "Chumpa de mezclilla", cat: "chumpas", icon: "🧥" },
+    { nombre: "Chumpa impermeable", cat: "chumpas", icon: "🧥" },
+  ];
+  // ------------------------------------------------------------------------------
+
+  const gallery = document.getElementById('gallery');
+  function render(cat) {
+    gallery.innerHTML = '';
+    PRODUCTOS.filter(p => cat === 'todo' || p.cat === cat).forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <div class="thumb">${p.icon}</div>
+        <div class="info">
+          <h4>${p.nombre}</h4>
+          <span class="tag">Q50</span>
+        </div>`;
+      gallery.appendChild(div);
+    });
+  }
+  render('todo');
+
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      render(chip.dataset.cat);
+    });
+  });
+</script>
+
+</body>
+</html>
