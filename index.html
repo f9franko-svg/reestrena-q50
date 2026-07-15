@@ -372,6 +372,21 @@
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
   }
 
+  // URL pública del sitio (para armar el link directo a la foto de cada prenda).
+  // Si cambias de dominio/repositorio, actualiza esta línea.
+  const SITE_URL = "https://f9franko-svg.github.io/reestrena-q50/";
+
+  // Arma el mensaje de WhatsApp para una prenda. Si tiene foto, agrega el link directo
+  // de la imagen al final: WhatsApp genera automáticamente una miniatura de vista previa
+  // con esa foto cuando se envía el mensaje.
+  function mensajeProducto(p) {
+    let msg = `Hola! Me interesa esta prenda: ${p.nombre} (Q50). ¿Todavía está disponible?`;
+    if (p.foto) {
+      msg += `\n${SITE_URL}fotos/${encodeURIComponent(p.foto)}`;
+    }
+    return msg;
+  }
+
   // Enlaces generales de WhatsApp (nav, hero, contacto)
   document.getElementById('waNav').href = waLink("Hola, quisiera ver el catálogo de ReEstrena Q50.");
   document.getElementById('waHero').href = waLink("Hola, quisiera ver el catálogo de ReEstrena Q50.");
@@ -419,7 +434,7 @@
     lightboxImg.src = `fotos/${encodeURIComponent(p.foto)}`;
     lightboxImg.alt = p.nombre;
     lightboxCaption.textContent = `${p.nombre} — Q50`;
-    lightboxWa.href = waLink(`Hola! Me interesa esta prenda: ${p.nombre} (Q50). ¿Todavía está disponible?`);
+    lightboxWa.href = waLink(mensajeProducto(p));
     lightbox.classList.add('open');
   }
   function closeLightbox() {
@@ -469,8 +484,7 @@
         </div>
         <div class="cta-hint">💬 Toca para apartar por WhatsApp</div>`;
       div.addEventListener('click', () => {
-        const mensaje = `Hola! Me interesa esta prenda: ${p.nombre} (Q50). ¿Todavía está disponible?`;
-        window.open(waLink(mensaje), '_blank', 'noopener');
+        window.open(waLink(mensajeProducto(p)), '_blank', 'noopener');
       });
       if (p.foto) {
         div.querySelector('.zoom-btn').addEventListener('click', (e) => {
